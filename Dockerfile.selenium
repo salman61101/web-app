@@ -2,21 +2,10 @@
 # Uses Debian-based Node image for easier Chrome installation
 FROM node:18-bullseye
 
-# Install Chrome and matching Chromedriver
+# Install Chromium and the matching Chromedriver from Debian repos (version-matched)
 RUN apt-get update && \
-    apt-get install -y wget unzip curl gnupg --no-install-recommends && \
-    wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor > /usr/share/keyrings/google-linux-signing-keyring.gpg && \
-    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-linux-signing-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
-    apt-get update && \
-    apt-get install -y google-chrome-stable fonts-liberation --no-install-recommends && \
-    CHROME_VER=$(google-chrome --version | awk '{print $3}' | cut -d '.' -f 1) && \
-    echo "Detected Chrome major version: ${CHROME_VER}" && \
-    curl -fsSL "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VER}" -o /tmp/LATEST_RELEASE && \
-    CHROMEDRIVER_VER=$(cat /tmp/LATEST_RELEASE) && \
-    curl -fsSL "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VER}/chromedriver_linux64.zip" -o /tmp/chromedriver.zip && \
-    unzip -o /tmp/chromedriver.zip -d /usr/local/bin/ && \
-    chmod +x /usr/local/bin/chromedriver && \
-    rm -rf /var/lib/apt/lists/* /tmp/chromedriver.zip /tmp/LATEST_RELEASE
+    apt-get install -y --no-install-recommends chromium chromium-driver fonts-liberation && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /tests
 
@@ -30,4 +19,8 @@ COPY tests ./tests
 COPY views ./views
 
 # Default command runs Selenium tests
+# Ensure chromedriver is on PATH and Chromium is detectable
+ENV CHROME_BIN=/usr/bin/chromium
+ENV CHROMEDRIVER_PATH=/usr/bin/chromedriver
+
 CMD ["npm", "test"]
