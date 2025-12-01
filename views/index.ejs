@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/styles.css" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="description" content="Simple Node + Express + SQLite users app" />
+  <link rel="icon" href="data:,">
+  
+</head>
+<body>
+  <header class="nav">
+    <div class="inner">
+      <div class="brand">User App</div>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/users">Users</a>
+        <a href="/users/new">Add User</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <h1>Welcome 👋</h1>
+      <p class="muted">This is a tiny Node.js + Express app using SQLite. Use the links above to view or add users.</p>
+      <div class="actions">
+        <a class="btn" href="/users">View users</a>
+        <span class="spacer"></span>
+        <a class="btn" href="/users/new">Add a user</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

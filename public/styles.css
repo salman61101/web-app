@@ -1,0 +1,99 @@
+/* Minimal, clean styles to make the app look nicer */
+:root {
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --primary: #2563eb;
+  --primary-600: #1d4ed8;
+  --border: #e2e8f0;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  background: var(--bg);
+  color: var(--text);
+}
+
+.container {
+  max-width: 800px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+
+header.nav {
+  background: #0b1222;
+  color: #e2e8f0;
+  padding: 12px 0;
+}
+.nav .inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+.nav a {
+  color: #e2e8f0;
+  text-decoration: none;
+  margin-left: 16px;
+}
+.nav a:hover { text-decoration: underline; }
+
+h1 { margin: 0 0 16px; font-size: 1.6rem; }
+p.muted { color: var(--muted); margin-top: 4px; }
+
+/* List */
+ul.list { list-style: none; padding: 0; margin: 0; }
+ul.list li {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+ul.list li:last-child { border-bottom: none; }
+
+/* Table (optional look) */
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 10px 8px; border-bottom: 1px solid var(--border); text-align: left; }
+th { background: #f1f5f9; font-weight: 600; }
+
+/* Form */
+form .field { margin-bottom: 12px; }
+label { display: block; margin-bottom: 6px; color: var(--muted); }
+input[type="text"], input[type="email"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #fff;
+}
+
+.btn {
+  display: inline-block;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn:hover { background: var(--primary-600); }
+.actions { margin-top: 12px; }
+
+.spacer { height: 8px; }

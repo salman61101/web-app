@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Users</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="icon" href="data:,">
+</head>
+<body>
+  <header class="nav">
+    <div class="inner">
+      <div class="brand">User App</div>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/users">Users</a>
+        <a href="/users/new">Add User</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <h1>Users</h1>
+      <% if (!users || users.length === 0) { %>
+        <p class="muted">No users found. <a href="/users/new">Add one?</a></p>
+      <% } else { %>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 64px;">ID</th>
+              <th>Name</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+          <tbody>
+          <% users.forEach(function(u) { %>
+            <tr>
+              <td><%= u.id %></td>
+              <td><strong><%= u.name %></strong></td>
+              <td><%= u.email %></td>
+            </tr>
+          <% }); %>
+          </tbody>
+        </table>
+      <% } %>
+    </div>
+  </div>
+</body>
+</html>
