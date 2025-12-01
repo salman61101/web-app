@@ -7,6 +7,9 @@ const options = new chrome.Options().addArguments(
   '--disable-dev-shm-usage'
 );
 
+// Allow overriding the base URL via env (useful inside Docker networks)
+const BASE_URL = process.env.BASE_URL || 'http://127.0.0.1:3000';
+
 describe('User App create user flow', function() {
   this.timeout(20000);
   let driver;
@@ -20,7 +23,7 @@ describe('User App create user flow', function() {
   });
 
   it('fills the new user form and submits, then verifies listing', async () => {
-    await driver.get('http://127.0.0.1:3000/users/new');
+    await driver.get(`${BASE_URL}/users/new`);
 
     const nameInput = await driver.findElement(By.id('name'));
     const emailInput = await driver.findElement(By.id('email'));
@@ -31,7 +34,7 @@ describe('User App create user flow', function() {
     await submitBtn.click();
 
     // After redirect, ensure /users table contains the new entry
-    await driver.wait(until.urlContains('/users'), 3000);
+  await driver.wait(until.urlContains('/users'), 3000);
 
     const rows = await driver.findElements(By.css('table tbody tr'));
     // If table exists, check that at least one row contains our email

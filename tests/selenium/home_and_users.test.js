@@ -8,6 +8,9 @@ const options = new chrome.Options().addArguments(
   '--disable-dev-shm-usage'
 );
 
+// Allow overriding the base URL via env (useful inside Docker networks)
+const BASE_URL = process.env.BASE_URL || 'http://127.0.0.1:3000';
+
 describe('User App basic navigation', function() {
   this.timeout(15000);
   let driver;
@@ -21,7 +24,7 @@ describe('User App basic navigation', function() {
   });
 
   it('loads Home page and shows nav links', async () => {
-    await driver.get('http://127.0.0.1:3000/');
+    await driver.get(`${BASE_URL}/`);
     // Check title and presence of Users link
     const title = await driver.getTitle();
     if (!title || !title.toLowerCase().includes('home')) {
@@ -32,7 +35,7 @@ describe('User App basic navigation', function() {
   });
 
   it('navigates to /users and sees a table or empty message', async () => {
-    await driver.get('http://127.0.0.1:3000/users');
+    await driver.get(`${BASE_URL}/users`);
     // Either a table exists or the "No users found" message appears
     const elements = await driver.findElements(By.css('table, p.muted'));
     if (elements.length === 0) {

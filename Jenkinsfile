@@ -94,8 +94,8 @@ pipeline {
           set -e
           # Run tests on same docker network so it can reach the app container by name
           docker rm -f webapp_tests || true
-          # Pass base URL via env if needed; tests currently hit 127.0.0.1:3000
-          docker run --name webapp_tests --network webapp_net web-app-tests:ci
+          # Pass base URL via env so tests target the app container by name
+          docker run --name webapp_tests --network webapp_net -e BASE_URL=http://webapp_app:3000 web-app-tests:ci
         '''
       }
     }
