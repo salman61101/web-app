@@ -1,0 +1,26 @@
+# Dockerfile for running Selenium tests (Chrome + Chromedriver)
+# Uses Debian-based Node image for easier Chrome installation
+FROM node:18-bullseye
+
+# Install Chrome and Chromedriver
+RUN apt-get update && \
+    apt-get install -y wget gnupg --no-install-recommends && \
+    wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor > /usr/share/keyrings/google-linux-signing-keyring.gpg && \
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-linux-signing-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
+    apt-get update && \
+    apt-get install -y google-chrome-stable fonts-liberation --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /tests
+
+# Copy only package files first for better caching
+COPY package*.json ./
+RUN npm install --only=dev
+
+# Copy test sources
+COPY tests ./tests
+# Some tests read app code structure; copy minimal app files if needed
+COPY views ./views
+
+# Default command runs Selenium tests
+CMD ["npm", "test"]
