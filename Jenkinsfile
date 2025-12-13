@@ -1,52 +1,70 @@
 pipeline {
     agent any
 
+    // Set environment variable so kubectl knows where to find kubeconfig
+    environment {
+        KUBECONFIG = '/var/lib/jenkins/.kube/config'  // Ensure Jenkins user has read access
+    }
+
     stages {
-        // Stage 1: Fetch the source code from GitHub
+        // ----------------------------
         stage('Code Fetch') {
             steps {
-                // Clone the 'main' branch from your GitHub repository
+                // Clone the main branch of the GitHub repository
+                // This fetches the latest code for building the Docker image
                 git branch: 'main', url: 'https://github.com/salman61101/web-app.git'
             }
         }
 
-        // Stage 2: Build the Docker image
+        // ----------------------------
         stage('Build Docker Image') {
             steps {
-                // Build a Docker image with the tag 'salmank17/web-app:latest'
+                // Build the Docker image using the Dockerfile in the repository
+                // Tag the image with your Docker Hub username and 'latest'
                 sh 'docker build -t salmank17/web-app:latest .'
             }
         }
 
-        // Stage 3: Push the Docker image to Docker Hub
+        // ----------------------------
         stage('Push Docker Image') {
             steps {
-                // Use stored Docker Hub credentials in Jenkins
+                // Push the Docker image to Docker Hub
+                // Uses credentials stored in Jenkins (dockerhub-creds)
                 withDockerRegistry([credentialsId: 'dockerhub-creds']) {
-                    // Push the Docker image to your Docker Hub repository
                     sh 'docker push salmank17/web-app:latest'
                 }
             }
         }
 
-        // Stage 4: Deploy the application to Kubernetes
+        // ----------------------------
         stage('Deploy to Kubernetes') {
             steps {
-                // Apply all Kubernetes manifests inside the 'k8s/' folder
-                // This includes Deployment, Service, and PVC
+                // Deploy the application to Kubernetes
+                // Apply all YAML manifests in the k8s/ folder
                 sh 'kubectl apply -f k8s/'
             }
         }
 
-        // Optional: Verify deployment
+        // ----------------------------
         stage('Verify Deployment') {
             steps {
-                // List all pods to confirm they are running
+                // Check if the pods are running correctly
                 sh 'kubectl get pods'
 
-                // List services to check NodePort or ClusterIP
+                // Check if the service is created and accessible
                 sh 'kubectl get svc'
             }
+        }
+    }
+
+    // ----------------------------
+    post {
+        // Actions to take after pipeline completes
+        success {
+            echo 'Pipeline completed successfully! Web app should be deployed on Kubernetes.'
+        }
+        failure {
+            echo 'Pipeline failed. Check the logs above to identify the issue.'
         }
     }
 }
