@@ -24,11 +24,10 @@ pipeline {
         stage('Run Selenium Tests') {
             steps {
                 echo 'Running Selenium tests...'
-                // Pass BASE_URL to tests via environment variable
-                withEnv(["BASE_URL=${BASE_URL}"]) {
-                    sh 'npm test'
-                    // or sh 'npx mocha tests/selenium/**/*.test.js --timeout 20000'
-                }
+                // Build a lightweight image that has Chromium + Chromedriver and dev deps
+                sh 'docker build -f Dockerfile.selenium -t web-app-tests .'
+                // Run tests inside the container and pass BASE_URL for app endpoint
+                sh 'docker run --rm -e BASE_URL=${BASE_URL} web-app-tests'
             }
         }
 
