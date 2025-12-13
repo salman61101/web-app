@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        // Path to kubeconfig readable by Jenkins
-        KUBECONFIG = '/home/ubuntu/.kube/config'
-    }
-
     stages {
         stage('Code Fetch') {
             steps {
@@ -29,25 +24,17 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                // Deploy using a kubeconfig file Jenkins can access
-                sh 'kubectl --kubeconfig=$KUBECONFIG apply -f k8s/'
-            }
-        }
-
-        stage('Verify Deployment') {
-            steps {
-                sh 'kubectl --kubeconfig=$KUBECONFIG get pods'
-                sh 'kubectl --kubeconfig=$KUBECONFIG get svc'
+                // Use kubeconfig from Jenkins credentials
+                withCredentials([file(credentialsId: 'kubeconfig-file', variable: 'KUBECONFIG')]) {
+                    sh 'kubectl apply -f k8s/'
+                    sh 'kubectl get pods'
+                }
             }
         }
     }
 
     post {
-        failure {
-            echo "Pipeline failed. Check the logs above to identify the issue."
-        }
-        success {
-            echo "Pipeline completed successfully. App deployed to Kubernetes!"
-        }
+        failure { echo "Pipeline failed. Check logs above." }
+        success { echo "Pipeline succeeded!" }
     }
 }
