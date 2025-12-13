@@ -1,30 +1,33 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_IMAGE = 'salmank17/web-app:latest'
+    }
+
     stages {
-        stage('Code Fetch') {
+        stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/salman61101/web-app.git'
+                git url: 'https://github.com/salman61101/web-app.git', branch: 'main'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t salmank17/web-app:latest .'
+                sh 'docker build -t $DOCKER_IMAGE .'
             }
         }
 
         stage('Push Docker Image') {
             steps {
-                withDockerRegistry([ credentialsId: 'dockerhub-creds', url: 'https://index.docker.io/v1/' ]) {
-                    sh 'docker push salmank17/web-app:latest'
+                withDockerRegistry([credentialsId: 'dockerhub-creds', url: '']) {
+                    sh 'docker push $DOCKER_IMAGE'
                 }
             }
         }
 
         stage('Deploy to Kubernetes') {
             steps {
-                // Use kubeconfig from Jenkins credentials
                 withCredentials([file(credentialsId: 'kubeconfig-file', variable: 'KUBECONFIG')]) {
                     sh 'kubectl apply -f k8s/'
                     sh 'kubectl get pods'
@@ -34,7 +37,11 @@ pipeline {
     }
 
     post {
-        failure { echo "Pipeline failed. Check logs above." }
-        success { echo "Pipeline succeeded!" }
+        failure {
+            echo 'Pipeline failed. Check logs above.'
+        }
+        success {
+            echo 'Pipeline succeeded!'
+        }
     }
 }
