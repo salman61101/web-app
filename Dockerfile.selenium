@@ -1,6 +1,7 @@
 # Dockerfile for running Selenium tests (Chrome + Chromedriver)
 # Uses Debian-based Node image for easier Chrome installation
-FROM node:18-bullseye
+# Use Node 20 to satisfy newer selenium-webdriver engine requirements
+FROM node:20-bullseye
 
 # Install Chromium and the matching Chromedriver from Debian repos (version-matched)
 RUN apt-get update && \
@@ -11,6 +12,7 @@ WORKDIR /tests
 
 # Copy only package files first for better caching
 COPY package*.json ./
+# Install only dev dependencies needed for tests; avoid upgrading selenium-webdriver beyond pinned version
 RUN npm install --only=dev
 
 # Copy test sources
