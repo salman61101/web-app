@@ -1,37 +1,47 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: web-app
+  name: web-app                 # Name of the Deployment
   labels:
-    app: web-app
+    app: web-app                # Label used to group related resources
 spec:
-  replicas: 2
+  replicas: 2                   # Run 2 identical pods (for HA & load balancing)
+
   selector:
     matchLabels:
-      app: web-app
+      app: web-app              # Deployment manages pods with this label
+
   template:
     metadata:
       labels:
-        app: web-app
+        app: web-app            # Pod label (must match selector above)
+
     spec:
       containers:
-        - name: web-app
-          image: salmank17/web-app:latest
-          imagePullPolicy: Always
+        - name: web-app         # Container name inside the pod
+
+          image: salmank17/web-app:latest  # Docker image from Docker Hub
+          imagePullPolicy: Always          # Always pull latest image
+
           ports:
-            - containerPort: 5000
+            - containerPort: 5000          # Port exposed by the container
+
           env:
             - name: PORT
-              value: "5000"
+              value: "5000"                # Environment variable for the app
+
+          # Checks if the app is ready to receive traffic
           readinessProbe:
             httpGet:
-              path: /
+              path: /                      # Endpoint to check
               port: 5000
-            initialDelaySeconds: 5
-            periodSeconds: 10
+            initialDelaySeconds: 5         # Wait before first check
+            periodSeconds: 10              # Check every 10 seconds
+
+          # Checks if the app is still alive
           livenessProbe:
             httpGet:
               path: /
               port: 5000
-            initialDelaySeconds: 10
-            periodSeconds: 20
+            initialDelaySeconds: 10        # Wait before first check
+            periodSeconds: 20              # Restart pod if check fails
