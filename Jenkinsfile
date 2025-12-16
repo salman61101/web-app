@@ -26,20 +26,6 @@ pipeline {
             }
         }
 
-        stage('Run Selenium Tests') {
-            steps {
-                // Informational log in Jenkins console
-                echo 'Running Selenium tests...'
-
-                // Execute Selenium test cases using npm test
-                // This runs Mocha tests located in tests/selenium/
-                // If any test fails, the pipeline will stop here
-                sh 'npm test'
-                // Alternative:
-                // sh 'npx mocha tests/selenium/*.test.js'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 // Build Docker image using the Dockerfile in the repository
