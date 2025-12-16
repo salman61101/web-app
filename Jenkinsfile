@@ -18,14 +18,6 @@ pipeline {
             }
         }
 
-        stage('Install Node Dependencies') {
-            steps {
-                // Install Node.js dependencies defined in package.json
-                // Requires Node.js and npm to be installed on the Jenkins agent
-                sh 'npm install'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 // Build Docker image using the Dockerfile in the repository
