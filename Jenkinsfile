@@ -46,7 +46,8 @@ pipeline {
                 ) {
                     // Deploy/update Kubernetes resources (Deployment, Service, PVC)
                     // YAML files are located in the k8s/ directory
-                    sh 'kubectl apply -f k8s/'
+                    // Using --validate=false to bypass certificate verification issues with Minikube
+                    sh 'kubectl apply -f k8s/ --validate=false'
                 }
             }
         }
