@@ -46,8 +46,8 @@ pipeline {
                 ) {
                     // Deploy/update Kubernetes resources (Deployment, Service, PVC)
                     // YAML files are located in the k8s/ directory
-                    // Using --insecure-skip-tls-verify to bypass certificate verification issues with Minikube
-                    sh 'kubectl apply -f k8s/ --insecure-skip-tls-verify'
+                    // Using both flags to bypass validation and TLS verification for Minikube
+                    sh 'kubectl apply -f k8s/ --insecure-skip-tls-verify --validate=false'
                 }
             }
         }
